@@ -1,0 +1,1171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aurevia Global - Secure Document Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0a0a12 0%, #151522 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 15% 85%, rgba(220, 38, 38, 0.15) 0%, transparent 60%),
+                radial-gradient(circle at 85% 15%, rgba(220, 38, 38, 0.1) 0%, transparent 60%),
+                linear-gradient(135deg, transparent 0%, rgba(20, 20, 30, 0.8) 100%);
+            z-index: -2;
+        }
+        
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                repeating-linear-gradient(90deg, 
+                    transparent 0px, 
+                    transparent 1px, 
+                    rgba(220, 38, 38, 0.03) 1px, 
+                    rgba(220, 38, 38, 0.03) 2px
+                ),
+                repeating-linear-gradient(0deg, 
+                    transparent 0px, 
+                    transparent 1px, 
+                    rgba(220, 38, 38, 0.03) 1px, 
+                    rgba(220, 38, 38, 0.03) 2px
+                );
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 440px;
+            background: rgba(18, 18, 26, 0.95);
+            border-radius: 20px;
+            box-shadow: 
+                0 25px 50px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(220, 38, 38, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(220, 38, 38, 0.15);
+            position: relative;
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                #dc2626 20%, 
+                #ef4444 50%, 
+                #dc2626 80%, 
+                transparent 100%
+            );
+            z-index: 10;
+        }
+        
+        /* Enhanced Header - Aurevia Global */
+        .header {
+            background: linear-gradient(135deg, 
+                rgba(34, 10, 10, 0.95) 0%, 
+                rgba(28, 8, 8, 0.95) 100%);
+            padding: 28px 30px;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid rgba(220, 38, 38, 0.2);
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            background: linear-gradient(45deg, 
+                transparent 30%, 
+                rgba(220, 38, 38, 0.05) 50%, 
+                transparent 70%);
+            animation: shimmer 8s infinite linear;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .company-info {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .company-logo {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 22px;
+            color: white;
+            box-shadow: 
+                0 8px 20px rgba(220, 38, 38, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .company-text {
+            flex: 1;
+        }
+        
+        .company-name {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            background: linear-gradient(135deg, #ffffff 0%, #fca5a5 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 4px;
+        }
+        
+        .company-detail {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 400;
+            line-height: 1.4;
+            letter-spacing: 0.3px;
+        }
+        
+        .security-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(220, 38, 38, 0.15);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #fca5a5;
+            border: 1px solid rgba(220, 38, 38, 0.3);
+            margin-top: 8px;
+        }
+        
+        /* Enhanced Navigation */
+        .nav {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            background: linear-gradient(135deg, 
+                rgba(40, 10, 10, 0.8) 0%, 
+                rgba(30, 8, 8, 0.8) 100%);
+            border-bottom: 1px solid rgba(220, 38, 38, 0.2);
+            position: relative;
+        }
+        
+        .nav::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(220, 38, 38, 0.3) 50%, 
+                transparent 100%);
+        }
+        
+        .nav-btn {
+            padding: 20px 12px;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            border-right: 1px solid rgba(220, 38, 38, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .nav-btn:last-child {
+            border-right: none;
+        }
+        
+        .nav-btn:hover {
+            color: rgba(255, 255, 255, 0.9);
+            background: rgba(220, 38, 38, 0.08);
+        }
+        
+        .nav-btn.active {
+            color: #ffffff;
+            background: linear-gradient(to bottom, 
+                rgba(220, 38, 38, 0.15) 0%, 
+                rgba(220, 38, 38, 0.05) 100%);
+            border-bottom: 2px solid #dc2626;
+        }
+        
+        .nav-btn.active::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, 
+                transparent 30%, 
+                #dc2626 50%, 
+                transparent 70%);
+        }
+        
+        .nav-icon {
+            font-size: 18px;
+            opacity: 0.8;
+        }
+        
+        /* Enhanced Document Previews */
+        .preview-section {
+            padding: 28px;
+            display: none;
+            background: linear-gradient(135deg, 
+                rgba(15, 15, 22, 0.8) 0%, 
+                rgba(10, 10, 15, 0.8) 100%);
+        }
+        
+        .preview-section.active {
+            display: block;
+        }
+        
+        .preview-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .preview-title::before {
+            content: '';
+            width: 4px;
+            height: 22px;
+            background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+            border-radius: 2px;
+            box-shadow: 0 0 10px rgba(220, 38, 38, 0.3);
+        }
+        
+        .preview-grid {
+            display: grid;
+            gap: 18px;
+        }
+        
+        .preview-item {
+            background: linear-gradient(135deg, 
+                rgba(30, 30, 40, 0.8) 0%, 
+                rgba(25, 25, 35, 0.8) 100%);
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid rgba(220, 38, 38, 0.15);
+            transition: all 0.4s ease;
+            cursor: pointer;
+            box-shadow: 
+                0 8px 24px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+        
+        .preview-item:hover {
+            transform: translateY(-4px);
+            border-color: rgba(220, 38, 38, 0.4);
+            box-shadow: 
+                0 15px 35px rgba(220, 38, 38, 0.15),
+                0 0 20px rgba(220, 38, 38, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+        
+        .preview-image {
+            height: 130px;
+            background: linear-gradient(135deg, 
+                rgba(40, 15, 15, 0.9) 0%, 
+                rgba(30, 10, 10, 0.9) 100%);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid rgba(220, 38, 38, 0.1);
+        }
+        
+        .preview-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(45deg, 
+                    transparent 45%, 
+                    rgba(220, 38, 38, 0.05) 50%, 
+                    transparent 55%
+                ),
+                repeating-linear-gradient(45deg, 
+                    transparent 0px, 
+                    transparent 1px, 
+                    rgba(220, 38, 38, 0.03) 1px, 
+                    rgba(220, 38, 38, 0.03) 2px
+                );
+        }
+        
+        .blurred-watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 48px;
+            font-weight: 800;
+            color: rgba(220, 38, 38, 0.15);
+            opacity: 0.6;
+            user-select: none;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .blurred-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 20px;
+            backdrop-filter: blur(4px);
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            margin: 20px;
+            border: 1px solid rgba(220, 38, 38, 0.1);
+        }
+        
+        .blurred-text {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.5);
+            line-height: 1.6;
+            filter: blur(3px);
+            user-select: none;
+            margin-bottom: 8px;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 0.5px;
+        }
+        
+        .preview-info {
+            padding: 20px;
+            border-top: 1px solid rgba(220, 38, 38, 0.1);
+        }
+        
+        .file-name {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .file-name::before {
+            content: '📄';
+            font-size: 14px;
+            opacity: 0.7;
+        }
+        
+        .file-description {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.6;
+            margin-bottom: 14px;
+        }
+        
+        .file-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.4);
+            padding-top: 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        /* Enhanced Secure Download Section */
+        .secure-section {
+            padding: 28px;
+            display: none;
+            background: linear-gradient(135deg, 
+                rgba(15, 15, 22, 0.8) 0%, 
+                rgba(10, 10, 15, 0.8) 100%);
+        }
+        
+        .secure-section.active {
+            display: block;
+        }
+        
+        .documents-list {
+            background: linear-gradient(135deg, 
+                rgba(30, 30, 40, 0.8) 0%, 
+                rgba(25, 25, 35, 0.8) 100%);
+            border-radius: 14px;
+            padding: 22px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(220, 38, 38, 0.15);
+            box-shadow: 
+                inset 0 1px 0 rgba(255, 255, 255, 0.05),
+                0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .document-row {
+            display: flex;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(220, 38, 38, 0.1);
+        }
+        
+        .document-row:last-child {
+            border-bottom: none;
+        }
+        
+        .doc-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            font-weight: 600;
+            font-size: 15px;
+            color: white;
+            box-shadow: 
+                0 4px 12px rgba(220, 38, 38, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+        
+        .doc-details {
+            flex: 1;
+        }
+        
+        .doc-title {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: #ffffff;
+        }
+        
+        .doc-specs {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        /* Enhanced Security Badge */
+        .security-badge {
+            background: linear-gradient(135deg, 
+                rgba(40, 15, 15, 0.9) 0%, 
+                rgba(30, 10, 10, 0.9) 100%);
+            border-radius: 14px;
+            padding: 22px;
+            margin: 24px 0;
+            border: 1px solid rgba(220, 38, 38, 0.3);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                0 10px 30px rgba(220, 38, 38, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+        
+        .security-badge::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                #dc2626 30%, 
+                #ef4444 50%, 
+                #dc2626 70%, 
+                transparent 100%);
+        }
+        
+        .security-badge::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(220, 38, 38, 0.3) 50%, 
+                transparent 100%);
+        }
+        
+        .security-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+            display: block;
+            text-shadow: 0 0 20px rgba(220, 38, 38, 0.3);
+        }
+        
+        .security-text {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.5;
+            font-weight: 500;
+        }
+        
+        .protocol-info {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 8px;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Enhanced Authentication */
+        .auth-box {
+            background: linear-gradient(135deg, 
+                rgba(30, 30, 40, 0.8) 0%, 
+                rgba(25, 25, 35, 0.8) 100%);
+            border-radius: 14px;
+            padding: 24px;
+            border: 1px solid rgba(220, 38, 38, 0.15);
+            box-shadow: 
+                inset 0 1px 0 rgba(255, 255, 255, 0.05),
+                0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .auth-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .auth-title::before {
+            content: '🔐';
+            font-size: 20px;
+            filter: drop-shadow(0 0 8px rgba(220, 38, 38, 0.3));
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 10px;
+            color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .form-label::before {
+            content: '→';
+            color: #dc2626;
+            font-weight: bold;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 16px;
+            background: rgba(10, 10, 15, 0.6);
+            border: 1px solid rgba(220, 38, 38, 0.2);
+            border-radius: 10px;
+            color: #ffffff;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #dc2626;
+            box-shadow: 
+                0 0 0 3px rgba(220, 38, 38, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+        
+        .form-input[readonly] {
+            opacity: 0.7;
+            background: rgba(15, 15, 22, 0.6);
+            border-color: rgba(220, 38, 38, 0.1);
+        }
+        
+        /* Enhanced Download Button */
+        .download-btn {
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(135deg, 
+                #dc2626 0%, 
+                #b91c1c 100%);
+            border: none;
+            border-radius: 12px;
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                0 10px 25px rgba(220, 38, 38, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+            letter-spacing: 0.5px;
+        }
+        
+        .download-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255, 255, 255, 0.2) 50%, 
+                transparent 100%);
+            transition: left 0.7s;
+        }
+        
+        .download-btn:hover::before {
+            left: 100%;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 15px 35px rgba(220, 38, 38, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+        
+        .download-btn:active {
+            transform: translateY(-1px);
+        }
+        
+        .download-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none;
+        }
+        
+        /* Enhanced Footer */
+        .footer {
+            padding: 22px 28px;
+            text-align: center;
+            border-top: 1px solid rgba(220, 38, 38, 0.15);
+            background: linear-gradient(135deg, 
+                rgba(20, 10, 10, 0.8) 0%, 
+                rgba(15, 8, 8, 0.8) 100%);
+            position: relative;
+        }
+        
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(220, 38, 38, 0.3) 50%, 
+                transparent 100%);
+        }
+        
+        .footer-text {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.5);
+            line-height: 1.6;
+            letter-spacing: 0.3px;
+        }
+        
+        /* Status Messages */
+        .status {
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin-top: 18px;
+            font-size: 12px;
+            display: none;
+            animation: fadeIn 0.4s ease;
+            border: 1px solid transparent;
+            background: rgba(20, 20, 30, 0.8);
+        }
+        
+        .status.success {
+            background: linear-gradient(135deg, 
+                rgba(34, 197, 94, 0.15) 0%, 
+                rgba(21, 128, 61, 0.15) 100%);
+            border-color: rgba(34, 197, 94, 0.3);
+            color: #86efac;
+            display: block;
+        }
+        
+        .status.error {
+            background: linear-gradient(135deg, 
+                rgba(220, 38, 38, 0.15) 0%, 
+                rgba(185, 28, 28, 0.15) 100%);
+            border-color: rgba(220, 38, 38, 0.3);
+            color: #fca5a5;
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Responsive */
+        @media (max-width: 480px) {
+            .container {
+                max-width: 100%;
+                border-radius: 16px;
+            }
+            
+            .header {
+                padding: 24px;
+            }
+            
+            .preview-section,
+            .secure-section {
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Enhanced Header - Aurevia Global Ltd -->
+        <div class="header">
+            <div class="company-info">
+                <div class="company-logo">AG</div>
+                <div class="company-text">
+                    <div class="company-name">Aurevia Global Ltd</div>
+                    <div class="company-detail">
+                        International Commodities & Strategic Materials • Confidential Document Exchange
+                    </div>
+                    <div class="security-status">
+                        <span>🔒</span>
+                        <span>Secure IMAP Authentication Required</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Enhanced Navigation -->
+        <div class="nav">
+            <div class="nav-btn active" data-target="preview">
+                <div class="nav-icon">📄</div>
+                <div>Preview</div>
+            </div>
+            <div class="nav-btn" data-target="download">
+                <div class="nav-icon">🔐</div>
+                <div>Download</div>
+            </div>
+            <div class="nav-btn" data-target="info">
+                <div class="nav-icon">ℹ️</div>
+                <div>Info</div>
+            </div>
+        </div>
+        
+        <!-- Enhanced Document Preview Section -->
+        <div id="preview" class="preview-section active">
+            <div class="preview-title">Confidential Document Preview</div>
+            
+            <div class="preview-grid">
+                <!-- Document 1 Preview - Contract -->
+                <div class="preview-item">
+                    <div class="preview-image">
+                        <div class="blurred-watermark">CONFIDENTIAL</div>
+                        <div class="blurred-content">
+                            <div class="blurred-text">AG/2024/CONTRACT-2876/D</div>
+                            <div class="blurred-text">Aurevia Global • Strategic Partnership</div>
+                            <div class="blurred-text">Contract Value: Confidential</div>
+                            <div class="blurred-text">Term: 24 Months • Q3 2024</div>
+                            <div class="blurred-text">Status: Final Review • Awaiting Signature</div>
+                        </div>
+                    </div>
+                    <div class="preview-info">
+                        <div class="file-name">CONTRACT-2876: Master Agreement</div>
+                        <div class="file-description">
+                            Comprehensive master agreement outlining strategic partnership terms, including confidentiality clauses, delivery schedules, quality standards, and compliance requirements for international commodities trading.
+                        </div>
+                        <div class="file-meta">
+                            <span>Legal • Contract</span>
+                            <span>428 MB • 18 pages</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Document 2 Preview - Specifications -->
+                <div class="preview-item">
+                    <div class="preview-image">
+                        <div class="blurred-watermark">TECHNICAL</div>
+                        <div class="blurred-content">
+                            <div class="blurred-text">AG/TECH/SPEC-5689/E</div>
+                            <div class="blurred-text">Quality Standards • Technical Compliance</div>
+                            <div class="blurred-text">International Certifications</div>
+                            <div class="blurred-text">Testing Protocols • Quality Assurance</div>
+                            <div class="blurred-text">Compliance: ISO Standards • Industry Regulations</div>
+                        </div>
+                    </div>
+                    <div class="preview-info">
+                        <div class="file-name">Technical Specifications & Standards</div>
+                        <div class="file-description">
+                            Complete technical specifications document detailing quality standards, compliance requirements, testing protocols, and international certifications for various commodities and strategic materials.
+                        </div>
+                        <div class="file-meta">
+                            <span>Technical • Compliance</span>
+                            <span>587 MB • 32 pages</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Document 3 Preview - Corporate -->
+                <div class="preview-item">
+                    <div class="preview-image">
+                        <div class="blurred-watermark">CORPORATE</div>
+                        <div class="blurred-content">
+                            <div class="blurred-text">AG/CP/2024-03/F</div>
+                            <div class="blurred-text">Est: 2008 • Global Operations</div>
+                            <div class="blurred-text">Annual Volume: Confidential</div>
+                            <div class="blurred-text">Revenue: Confidential (2023)</div>
+                            <div class="blurred-text">Markets: 48 Countries • 5 Continents</div>
+                        </div>
+                    </div>
+                    <div class="preview-info">
+                        <div class="file-name">Corporate Profile & Capabilities</div>
+                        <div class="file-description">
+                            Comprehensive corporate overview including company history, global operations, financial highlights, organizational structure, strategic partnerships, and market presence across multiple commodities sectors.
+                        </div>
+                        <div class="file-meta">
+                            <span>Corporate • Business</span>
+                            <span>352 MB • 24 pages</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Enhanced Secure Download Section -->
+        <div id="download" class="secure-section">
+            <div class="preview-title">Secure Document Download</div>
+            
+            <div class="documents-list">
+                <div class="document-row">
+                    <div class="doc-icon">CA</div>
+                    <div class="doc-details">
+                        <div class="doc-title">CONTRACT-2876: Master Agreement</div>
+                        <div class="doc-specs">PDF • 428 MB • Confidential Legal Document</div>
+                    </div>
+                </div>
+                
+                <div class="document-row">
+                    <div class="doc-icon">TS</div>
+                    <div class="doc-details">
+                        <div class="doc-title">Technical Specifications & Standards</div>
+                        <div class="doc-specs">PDF • 587 MB • Technical Compliance</div>
+                    </div>
+                </div>
+                
+                <div class="document-row">
+                    <div class="doc-icon">CP</div>
+                    <div class="doc-details">
+                        <div class="doc-title">Corporate Profile & Capabilities</div>
+                        <div class="doc-specs">PDF • 352 MB • Business Introduction</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="security-badge">
+                <div class="security-icon">🔒</div>
+                <div class="security-text">
+                    Secure IMAP Authentication Required
+                </div>
+                <div class="protocol-info">
+                    256-bit AES Encryption • TLS 1.3 Protocol • End-to-End Secure Transfer
+                </div>
+            </div>
+            
+            <div class="auth-box">
+                <div class="auth-title">Receiver Authentication</div>
+                
+                <div class="form-group">
+                    <label class="form-label">Authorized Email</label>
+                    <input type="email" class="form-input" value="zack.anderson@galaxystones.com" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Secure Access Code</label>
+                    <input type="password" class="form-input" id="secureCode" 
+                           placeholder="Enter IMAP access code" 
+                           autocomplete="current-password"
+                           maxlength="20">
+                    <div style="font-size: 11px; color: rgba(255, 255, 255, 0.4); margin-top: 8px; padding-left: 20px;">
+                        Code provided in secure invitation email
+                    </div>
+                </div>
+                
+                <div id="status" class="status"></div>
+                
+                <button id="downloadBtn" class="download-btn" disabled>
+                    <span>🔐</span> Authenticate & Download Documents
+                </button>
+            </div>
+        </div>
+        
+        <!-- Enhanced Footer -->
+        <div class="footer">
+            <div class="footer-text">
+                Aurevia Global Ltd • Secure Document Portal v3.1<br>
+                © 2024 Aurevia Global Ltd. All rights reserved. Confidential Business Use Only.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Enhanced Navigation
+            const navBtns = document.querySelectorAll('.nav-btn');
+            const sections = document.querySelectorAll('.preview-section, .secure-section');
+            
+            navBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const target = this.dataset.target;
+                    
+                    // Update navigation with smooth transition
+                    navBtns.forEach(b => {
+                        b.classList.remove('active');
+                        b.style.transition = 'all 0.4s ease';
+                    });
+                    this.classList.add('active');
+                    
+                    // Update sections
+                    sections.forEach(section => {
+                        section.style.opacity = '0';
+                        section.style.transform = 'translateY(10px)';
+                        section.classList.remove('active');
+                        
+                        setTimeout(() => {
+                            if (section.id === target) {
+                                section.classList.add('active');
+                                section.style.opacity = '1';
+                                section.style.transform = 'translateY(0)';
+                                section.style.transition = 'all 0.4s ease';
+                            }
+                        }, 50);
+                    });
+                    
+                    // Auto-focus on secure code when in download section
+                    if (target === 'download') {
+                        setTimeout(() => {
+                            document.getElementById('secureCode').focus();
+                        }, 200);
+                    }
+                });
+            });
+            
+            // Preview items click to switch to download
+            const previewItems = document.querySelectorAll('.preview-item');
+            previewItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    navBtns.forEach(b => b.classList.remove('active'));
+                    document.querySelector('.nav-btn[data-target="download"]').classList.add('active');
+                    
+                    sections.forEach(s => {
+                        s.classList.remove('active');
+                        s.style.opacity = '0';
+                    });
+                    
+                    const downloadSection = document.getElementById('download');
+                    downloadSection.classList.add('active');
+                    setTimeout(() => {
+                        downloadSection.style.opacity = '1';
+                        downloadSection.style.transform = 'translateY(0)';
+                    }, 50);
+                    
+                    // Focus on password field with animation
+                    setTimeout(() => {
+                        const secureCode = document.getElementById('secureCode');
+                        secureCode.focus();
+                        secureCode.style.boxShadow = '0 0 0 3px rgba(220, 38, 38, 0.3)';
+                        setTimeout(() => {
+                            secureCode.style.boxShadow = '';
+                        }, 1000);
+                    }, 300);
+                });
+            });
+            
+            // Password validation with enhanced feedback
+            const secureCode = document.getElementById('secureCode');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const status = document.getElementById('status');
+            
+            secureCode.addEventListener('input', function() {
+                const code = this.value.trim();
+                const isValid = code.length >= 8 && /[A-Z]/.test(code) && /\d/.test(code);
+                
+                downloadBtn.disabled = !isValid;
+                
+                if (isValid) {
+                    downloadBtn.innerHTML = '<span>🔓</span> Authenticate & Download Documents';
+                    downloadBtn.style.background = 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)';
+                    this.style.borderColor = '#22c55e';
+                } else {
+                    downloadBtn.innerHTML = '<span>🔐</span> Authenticate & Download Documents';
+                    downloadBtn.style.background = 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)';
+                    this.style.borderColor = code.length > 0 ? '#f59e0b' : 'rgba(220, 38, 38, 0.2)';
+                }
+                
+                // Clear status
+                status.className = 'status';
+            });
+            
+            // Enhanced download process simulation
+            downloadBtn.addEventListener('click', function() {
+                if (this.disabled) return;
+                
+                const code = secureCode.value;
+                
+                // Start enhanced authentication process
+                this.disabled = true;
+                this.innerHTML = '<span>⏳</span> Initiating Secure Connection...';
+                this.style.background = 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)';
+                
+                // Step 1: Connection
+                setTimeout(() => {
+                    this.innerHTML = '<span>🔐</span> Establishing TLS 1.3...';
+                    status.textContent = 'Secure handshake with IMAP server in progress...';
+                    status.className = 'status';
+                }, 800);
+                
+                // Step 2: Authentication
+                setTimeout(() => {
+                    this.innerHTML = '<span>🔐</span> Authenticating Credentials...';
+                    status.textContent = 'Verifying access code and permissions...';
+                    this.style.background = 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)';
+                }, 1800);
+                
+                // Step 3: Document preparation
+                setTimeout(() => {
+                    this.innerHTML = '<span>🔐</span> Decrypting Documents...';
+                    status.textContent = 'Decrypting 256-bit AES encrypted files...';
+                    this.style.background = 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)';
+                }, 2800);
+                
+                // Step 4: Success
+                setTimeout(() => {
+                    status.textContent = '✓ Secure connection established. ✓ Authentication verified. ✓ Documents decrypted.';
+                    status.className = 'status success';
+                    
+                    this.innerHTML = '<span>📥</span> Downloading 3 Documents...';
+                    this.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+                    
+                    // Show download progress
+                    setTimeout(() => {
+                        let progress = 0;
+                        const progressInterval = setInterval(() => {
+                            progress += 10;
+                            status.textContent = `Downloading... ${progress}% complete`;
+                            
+                            if (progress >= 100) {
+                                clearInterval(progressInterval);
+                                status.textContent = '✓ Download complete. 3 documents (1.37 GB) transferred securely via IMAP protocol.';
+                                
+                                this.innerHTML = '<span>✅</span> Download Complete';
+                                this.style.background = 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)';
+                                
+                                // Reset after 3 seconds
+                                setTimeout(() => {
+                                    secureCode.value = '';
+                                    downloadBtn.disabled = true;
+                                    downloadBtn.innerHTML = '<span>🔐</span> Authenticate & Download Documents';
+                                    downloadBtn.style.background = 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)';
+                                    status.className = 'status';
+                                }, 3000);
+                            }
+                        }, 100);
+                    }, 1000);
+                }, 3800);
+            });
+            
+            // Enhanced Enter key support
+            secureCode.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && !downloadBtn.disabled) {
+                    downloadBtn.click();
+                    this.style.transform = 'scale(0.98)';
+                    setTimeout(() => {
+                        this.style.transform = 'scale(1)';
+                    }, 150);
+                }
+            });
+            
+            // Add subtle hover effects to all interactive elements
+            const interactiveElements = document.querySelectorAll('.nav-btn, .preview-item, .download-btn, .form-input');
+            interactiveElements.forEach(el => {
+                el.addEventListener('mouseenter', function() {
+                    this.style.transition = 'all 0.3s ease';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
