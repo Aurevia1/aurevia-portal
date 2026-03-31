@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgroVest — 16.86% ROI | Sustainable Agriculture Investment</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Chart.js for Live Chart -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a2f1f;
+            color: #e0e0e0;
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #1a3a2a; }
+        ::-webkit-scrollbar-thumb { background: #4c9f70; border-radius: 4px; }
+        .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+
+        /* Navigation */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #6fcf97, #2e7d32);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            cursor: pointer;
+        }
+        .nav-links { display: flex; gap: 32px; align-items: center; flex-wrap: wrap; }
+        .nav-links a { color: #e0e0e0; text-decoration: none; font-weight: 500; transition: color 0.3s; cursor: pointer; }
+        .nav-links a:hover { color: #6fcf97; }
+        .btn-outline {
+            border: 1px solid #4c9f70;
+            padding: 8px 20px;
+            border-radius: 30px;
+            background: transparent;
+            color: #6fcf97;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-outline:hover { background: #4c9f70; color: #0a2f1f; }
+        .btn-primary {
+            background: linear-gradient(135deg, #4c9f70, #2e7d32);
+            border: none;
+            padding: 12px 28px;
+            border-radius: 30px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(76, 159, 112, 0.3); }
+
+        /* Hero */
+        .hero { padding: 60px 0 40px; text-align: center; }
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #ffffff, #6fcf97);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .hero p { font-size: 18px; color: #b0b0b0; max-width: 700px; margin: 0 auto 30px; }
+        .usdt-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(74,222,128,.15);
+            border: 1px solid #4ade80;
+            border-radius: 8px;
+            padding: 4px 12px;
+            font-size: .75rem;
+            color: #4ade80;
+            margin-left: 8px;
+        }
+        .stats { display: flex; justify-content: center; gap: 60px; margin-top: 50px; flex-wrap: wrap; }
+        .stat-item { text-align: center; }
+        .stat-number { font-size: 32px; font-weight: 700; color: #6fcf97; }
+        .stat-label { font-size: 14px; color: #a0a0a0; }
+
+        /* Live Price Card */
+        .price-card {
+            background: rgba(30, 60, 45, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 24px;
+            margin: 40px 0;
+            border: 1px solid rgba(76, 159, 112, 0.3);
+        }
+        .price-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 20px; }
+        .current-price { font-size: 36px; font-weight: 700; color: white; }
+        .price-change { color: #6fcf97; font-weight: 600; }
+        .chart-container { margin: 20px 0; background: rgba(10, 30, 20, 0.5); border-radius: 12px; padding: 15px; }
+        canvas { max-height: 300px; width: 100%; }
+        .price-stats { display: flex; justify-content: space-between; margin-top: 15px; font-size: 14px; color: #a0a0a0; }
+
+        /* Section Titles */
+        .section-title { font-size: 28px; font-weight: 700; margin: 50px 0 30px; text-align: center; }
+
+        /* Products Grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 28px;
+            margin-bottom: 50px;
+        }
+        .product-card {
+            background: rgba(20, 45, 35, 0.8);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid rgba(76, 159, 112, 0.3);
+        }
+        .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); border-color: #4c9f70; }
+        .product-image { width: 100%; height: 200px; object-fit: cover; }
+        .product-content { padding: 20px; }
+        .product-category { font-size: 12px; color: #6fcf97; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+        .product-title { font-size: 22px; font-weight: 600; margin: 8px 0 10px; color: white; }
+        .product-desc { color: #b0b0b0; font-size: 14px; margin-bottom: 20px; line-height: 1.5; }
+        .product-meta {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            background: rgba(22, 163, 74, 0.12);
+            border-radius: 12px;
+            padding: 12px;
+        }
+        .meta-item { text-align: center; }
+        .meta-label { font-size: .7rem; color: #4ade80; text-transform: uppercase; letter-spacing: .06em; }
+        .meta-val { font-family: 'Space Mono', monospace; font-size: .9rem; color: #fff; font-weight: 700; }
+        .invest-btn {
+            width: 100%;
+            background: #2e7d32;
+            border: none;
+            padding: 12px;
+            border-radius: 30px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background 0.3s;
+        }
+        .invest-btn:hover { background: #4c9f70; }
+
+        /* About Section */
+        .about-section {
+            background: rgba(10, 47, 31, 0.8);
+            border-radius: 24px;
+            padding: 48px;
+            margin: 60px 0;
+            border: 1px solid rgba(76, 159, 112, 0.3);
+        }
+        .about-section h2 { font-size: 32px; margin-bottom: 24px; color: #6fcf97; }
+        .about-section h3 { font-size: 24px; margin: 32px 0 16px; color: #e0e0e0; }
+        .about-section p { margin-bottom: 20px; line-height: 1.7; color: #c0c0c0; }
+        .how-it-works {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            margin: 32px 0;
+        }
+        .step {
+            background: rgba(76, 159, 112, 0.1);
+            padding: 20px;
+            border-radius: 16px;
+            text-align: center;
+        }
+        .step-number { font-size: 28px; font-weight: 700; color: #6fcf97; margin-bottom: 10px; }
+
+        /* Testimonials */
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin: 40px 0;
+        }
+        .testimonial-card {
+            background: rgba(20, 45, 35, 0.7);
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid rgba(76, 159, 112, 0.2);
+        }
+        .testimonial-text { font-style: italic; margin-bottom: 16px; color: #d0d0d0; }
+        .testimonial-author { font-weight: 600; color: #6fcf97; }
+
+        /* FAQ */
+        .faq-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+        .faq-item {
+            background: rgba(20, 45, 35, 0.5);
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .faq-item:hover { background: rgba(20, 45, 35, 0.7); }
+        .faq-question { font-weight: 600; font-size: 18px; margin-bottom: 10px; color: #6fcf97; display: flex; justify-content: space-between; align-items: center; }
+        .faq-answer { color: #b0b0b0; font-size: 14px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+        .faq-item.open .faq-answer { max-height: 200px; margin-top: 10px; }
+        .faq-icon { font-size: 20px; transition: transform 0.3s; }
+        .faq-item.open .faq-icon { transform: rotate(45deg); }
+
+        /* Live Chat */
+        .chat-button {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 1000;
+            background: #2e7d32;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            transition: 0.3s;
+            font-size: 28px;
+        }
+        .chat-button:hover { transform: scale(1.05); background: #4c9f70; }
+        .chat-window {
+            position: fixed;
+            bottom: 100px;
+            right: 24px;
+            width: 350px;
+            height: 450px;
+            background: #1a2a1f;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            display: none;
+            flex-direction: column;
+            z-index: 1000;
+            overflow: hidden;
+            border: 1px solid rgba(76, 159, 112, 0.3);
+        }
+        .chat-window.open { display: flex; }
+        .chat-header {
+            background: #0a2f1f;
+            color: #fff;
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(76, 159, 112, 0.3);
+        }
+        .chat-messages {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+            background: #0f2a1a;
+        }
+        .message { margin-bottom: 12px; display: flex; }
+        .message.user { justify-content: flex-end; }
+        .message.bot .bubble { background: #2e7d32; color: #fff; }
+        .message.user .bubble { background: #4c9f70; color: #fff; }
+        .bubble {
+            max-width: 80%;
+            padding: 10px 14px;
+            border-radius: 18px;
+            font-size: .85rem;
+        }
+        .chat-input-area {
+            display: flex;
+            padding: 12px;
+            border-top: 1px solid rgba(76, 159, 112, 0.3);
+            background: #0a2f1f;
+        }
+        .chat-input-area input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid rgba(76, 159, 112, 0.3);
+            border-radius: 24px;
+            outline: none;
+            background: #1a3a2a;
+            color: #fff;
+        }
+        .chat-input-area button {
+            background: #2e7d32;
+            border: none;
+            border-radius: 24px;
+            padding: 8px 16px;
+            margin-left: 8px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        /* Footer */
+        .footer {
+            border-top: 1px solid rgba(76, 159, 112, 0.3);
+            padding: 40px 0 30px;
+            margin-top: 60px;
+            text-align: center;
+        }
+        .footer-logo {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #6fcf97, #2e7d32);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 20px;
+        }
+        .motto { font-size: 18px; color: #6fcf97; margin: 20px 0; font-style: italic; }
+        .social-links { display: flex; justify-content: center; gap: 24px; margin: 25px 0; }
+        .social-links a { color: #b0b0b0; text-decoration: none; transition: color 0.3s; }
+        .social-links a:hover { color: #6fcf97; }
+        .copyright { font-size: 12px; color: #808080; margin-top: 20px; }
+
+        /* Auth Forms */
+        .view { display: none; }
+        .view.active { display: block; }
+        .auth-wrap { min-height: 100vh; display: flex; align-items: stretch; background: #0a2f1f; }
+        .auth-right {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 32px;
+            background: #fff;
+            border-radius: 24px;
+            margin: 40px;
+        }
+        .auth-box { max-width: 440px; width: 100%; }
+        .auth-box h3 { font-size: 1.9rem; color: #14532d; margin-bottom: 6px; }
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; font-size: .85rem; font-weight: 600; margin-bottom: 6px; color: #1a2e1f; }
+        .form-group input, .form-group select {
+            width: 100%;
+            border: 1.5px solid #c8e6d0;
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-size: .95rem;
+        }
+        .auth-btn {
+            width: 100%;
+            background: #15803d;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .auth-btn:hover { background: #16a34a; }
+
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; text-align: center; }
+            .hero h1 { font-size: 32px; }
+            .stats { gap: 30px; }
+            .about-section { padding: 24px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Live Chat -->
+<div class="chat-button" onclick="toggleChat()">💬</div>
+<div class="chat-window" id="chat-window">
+    <div class="chat-header">
+        <span>💬 AgroVest Support</span>
+        <button onclick="toggleChat()" style="background: none; border: none; color: #fff; cursor: pointer; font-size: 20px;">✕</button>
+    </div>
+    <div class="chat-messages" id="chat-messages">
+        <div class="message bot"><div class="bubble">👋 Welcome to AgroVest! How can we help you today?</div></div>
+    </div>
+    <div class="chat-input-area">
+        <input type="text" id="chat-input" placeholder="Type your message..." onkeypress="if(event.key==='Enter') sendMessage()">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+</div>
+
+<!-- HOME VIEW -->
+<div id="view-home" class="view active">
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="logo" onclick="showView('view-home')">🌱 AgroVest</div>
+            <div class="nav-links">
+                <a onclick="document.getElementById('home-hero').scrollIntoView({behavior:'smooth'})">Home</a>
+                <a onclick="document.getElementById('about-section').scrollIntoView({behavior:'smooth'})">About</a>
+                <a onclick="document.getElementById('products-section').scrollIntoView({behavior:'smooth'})">Products</a>
+                <a onclick="document.getElementById('testimonials-section').scrollIntoView({behavior:'smooth'})">Testimonials</a>
+                <a onclick="document.getElementById('faq-section').scrollIntoView({behavior:'smooth'})">FAQ</a>
+                <button class="btn-outline" onclick="showView('view-login')">Sign In</button>
+                <button class="btn-primary" onclick="showView('view-signup')">Create Account</button>
+            </div>
+        </nav>
+
+        <!-- Hero -->
+        <section id="home-hero" class="hero">
+            <h1>Join Other Global Sustainable Agricultural<br>Farmers and Investors</h1>
+            <p>Invest from as low as $20 with a 16.86% ROI. 30-day cycles, expert-managed farms, and real returns from real agriculture. <span class="usdt-badge">🇺🇸 USDT TRC-20 ONLY</span></p>
+            <button class="btn-primary" style="font-size: 18px; padding: 14px 36px;" onclick="showView('view-signup')">Start Investing from $20 →</button>
+            <div class="stats">
+                <div class="stat-item"><div class="stat-number">$8.2M</div><div class="stat-label">Total Invested</div></div>
+                <div class="stat-item"><div class="stat-number">5+</div><div class="stat-label">Agricultural Products</div></div>
+                <div class="stat-item"><div class="stat-number">5,000+</div><div class="stat-label">Global Investors</div></div>
+            </div>
+        </section>
+
+        <!-- Live Market Chart -->
+        <div class="price-card">
+            <div class="price-header">
+                <span style="font-weight: 600;">📈 Live Market Prices</span>
+                <span>Real-time price fluctuations based on supply & demand</span>
+            </div>
+            <div class="price-header" id="live-price-display">
+                <div class="current-price" id="currentPrice">$105.82</div>
+                <div class="price-change" id="priceChange">▲ 10.19%</div>
+            </div>
+            <div class="chart-container">
+                <canvas id="priceChart"></canvas>
+            </div>
+            <div class="price-stats">
+                <span>24h High: <span id="high24h">$105.82</span></span>
+                <span>24h Low: <span id="low24h">$77.22</span></span>
+                <span>ROI (30 Days): <span style="color: #6fcf97;">+16.86%</span></span>
+            </div>
+            <div style="font-size: 12px; color: #808080; margin-top: 10px;">📊 Prices fluctuate based on market supply & demand. Lock in your investment at current market price!</div>
+        </div>
+
+        <!-- About Section -->
+        <div class="about-section" id="about-section">
+            <h2>The AgroVest Story: Bridging the Gap Between Soil and Success</h2>
+            <p>At AgroVest, we believe that a lack of capital should never be the reason a fertile field goes to waste. For too long, a significant barrier has stood between passionate farmers and the resources they need to thrive. Farmers have the skill and the land but often lack the financial backing to scale. Meanwhile, everyday individuals want to benefit from the stability of agriculture but don't have the time or expertise to farm. AgroVest is the bridge that closes this gap.</p>
+            <h3>🌟 Our Journey</h3>
+            <p>Founded in 2024, AgroVest was born from a simple yet powerful conviction: You shouldn't have to be a farmer to benefit from the harvest. Since our inception, we have successfully empowered numerous agricultural projects, proving that when we invest in our farmers, everyone wins.</p>
+            <h3>⚙️ How It Works: Empowerment in 30 Days</h3>
+            <p>We've democratized agricultural investment, making it accessible, transparent, and rewarding.</p>
+            <div class="how-it-works">
+                <div class="step"><div class="step-number">1</div>Accessible Entry: Start your journey with as little as $20 via USDT TRC-20.</div>
+                <div class="step"><div class="step-number">2</div>Your Choice: Select the specific agricultural product or project that resonates with you.</div>
+                <div class="step"><div class="step-number">3</div>Expert Management: Once you invest, our vetted farmers take over the hard work.</div>
+                <div class="step"><div class="step-number">4</div>The Harvest: After a concise 30-day cycle, you receive your capital + 16.86% ROI.</div>
+            </div>
+            <h3>💚 Why AgroVest?</h3>
+            <p>We believe agriculture is the world's most essential industry, and it shouldn't "go down the drain" simply due to a lack of funds. By participating in AgroVest, you aren't just growing your wealth; you are empowering local farmers, strengthening food security, and diversifying your portfolio with a tangible asset class.</p>
+        </div>
+
+        <!-- Products Section with ORIGINAL IMAGES -->
+        <h2 class="section-title" id="products-section">🌾 Investment Products</h2>
+        <div class="products-grid" id="products-grid">
+            <!-- Products loaded via JavaScript with original images -->
+        </div>
+
+        <!-- Testimonials -->
+        <h2 class="section-title" id="testimonials-section">💬 What Our Investors Say</h2>
+        <div class="testimonials-grid">
+            <div class="testimonial-card">
+                <div class="testimonial-text">"I started with just $50 and have seen consistent returns every 30 days. AgroVest makes agriculture investing so simple! USDT TRC-20 deposits are instant."</div>
+                <div class="testimonial-author">— Michael O., Nigeria</div>
+            </div>
+            <div class="testimonial-card">
+                <div class="testimonial-text">"Finally, a platform that connects real farmers with real investors. The transparency is unmatched. My 16.86% ROI comes exactly on time."</div>
+                <div class="testimonial-author">— Sarah K., Kenya</div>
+            </div>
+            <div class="testimonial-card">
+                <div class="testimonial-text">"Love that I can support sustainable agriculture while growing my savings. USDT TRC-20 makes it so easy to invest from anywhere!"</div>
+                <div class="testimonial-author">— David M., USA</div>
+            </div>
+        </div>
+
+        <!-- FAQ -->
+        <h2 class="section-title" id="faq-section">❓ Frequently Asked Questions</h2>
+        <div class="faq-grid" id="faq-grid">
+            <div class="faq-item" onclick="this.classList.toggle('open')">
+                <div class="faq-question">What is the minimum investment? <span class="faq-icon">+</span></div>
+                <div class="faq-answer">You can start investing from as low as $20 across any of our agricultural products via USDT TRC-20.</div>
+            </div>
+            <div class="faq-item" onclick="this.classList.toggle('open')">
+                <div class="faq-question">How long is each investment cycle? <span class="faq-icon">+</span></div>
+                <div class="faq-answer">All investment cycles run for 30 days, after which you receive your capital plus 16.86% ROI.</div>
+            </div>
+            <div class="faq-item" onclick="this.classList.toggle('open')">
+                <div class="faq-question">What payment method is accepted? <span class="faq-icon">+</span></div>
+                <div class="faq-answer">We ONLY accept USDT TRC-20 (Tether on TRON network) for fast, secure, and low-cost transactions.</div>
+            </div>
+            <div class="faq-item" onclick="this.classList.toggle('open')">
+                <div class="faq-question">Is my investment safe? <span class="faq-icon">+</span></div>
+                <div class="faq-answer">We partner with vetted, experienced farmers and maintain a risk management fund to protect investor returns.</div>
+            </div>
+            <div class="faq-item" onclick="this.classList.toggle('open')">
+                <div class="faq-question">How do I earn returns? <span class="faq-icon">+</span></div>
+                <div class="faq-answer">Returns are automatically credited to your wallet after each 30-day cycle. You can reinvest or withdraw in USDT.</div>
+            </div>
+            <div class="faq-item" onclick="this.classList.toggle('open')">
+                <div class="faq-question">Can I choose which farm to invest in? <span class="faq-icon">+</span></div>
+                <div class="faq-answer">Yes! You can select from our 5+ agricultural products including poultry, cassava, palm oil, and more.</div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-logo">🌱 AgroVest</div>
+            <div class="motto">"Making Agriculture Accessible to All"</div>
+            <div class="social-links">
+                <a href="#">Twitter</a>
+                <a href="#">Instagram</a>
+                <a href="#">Facebook</a>
+                <a href="#">LinkedIn</a>
+            </div>
+            <div class="copyright">© 2024 AgroVest. All rights reserved. Empowering global agriculture, one investment at a time.</div>
+            <div style="margin-top: 12px; font-size: .75rem;">🇺🇸 Only USDT TRC-20 Accepted | 30-Day Cycles | 16.86% Fixed ROI</div>
+        </footer>
+    </div>
+</div>
+
+<!-- SIGNUP VIEW -->
+<div id="view-signup" class="view">
+    <div class="auth-wrap">
+        <div class="auth-right">
+            <div class="auth-box">
+                <h3>Create Account</h3>
+                <div class="form-group"><label>Full Name</label><input type="text" id="su-name" placeholder="John Doe"></div>
+                <div class="form-group"><label>Email</label><input type="email" id="su-email" placeholder="john@example.com"></div>
+                <div class="form-group"><label>USDT TRC-20 Wallet Address</label><input type="text" id="su-wallet" placeholder="T... (starts with T)"></div>
+                <div class="form-group"><label>Password</label><input type="password" id="su-pass" placeholder="Min. 6 characters"></div>
+                <button class="auth-btn" onclick="doSignup()">Create Account →</button>
+                <div style="text-align: center; margin-top: 20px;">Already have an account? <a onclick="showView('view-login')" style="color: #15803d; cursor: pointer;">Sign In</a></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- LOGIN VIEW -->
+<div id="view-login" class="view">
+    <div class="auth-wrap">
+        <div class="auth-right">
+            <div class="auth-box">
+                <h3>Sign In</h3>
+                <div class="form-group"><label>Email</label><input type="email" id="li-email" placeholder="your@email.com"></div>
+                <div class="form-group"><label>Password</label><input type="password" id="li-pass" placeholder="••••••••"></div>
+                <button class="auth-btn" onclick="doLogin()">Sign In →</button>
+                <div style="text-align: center; margin-top: 20px;">New here? <a onclick="showView('view-signup')" style="color: #15803d; cursor: pointer;">Create an account</a></div>
+                <div style="margin-top: 20px; padding: 12px; background: #f0fdf4; border-radius: 8px; font-size: .8rem;">
+                    <strong>Demo:</strong> investor@demo.com / demo123
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- USER DASHBOARD VIEW (Simplified) -->
+<div id="view-user-dash" class="view">
+    <div class="container" style="padding-top: 80px;">
+        <h2>Welcome, <span id="dash-name"></span> 👋</h2>
+        <p>Your investment dashboard</p>
+        <div class="stats" style="margin-top: 30px;">
+            <div class="stat-item"><div class="stat-number" id="dash-total">$0</div><div class="stat-label">Total Invested</div></div>
+            <div class="stat-item"><div class="stat-number" id="dash-roi">$0</div><div class="stat-label">Expected Returns</div></div>
+        </div>
+        <button class="btn-primary" onclick="showView('view-home')" style="margin-top: 20px;">← Back to Home</button>
+        <button class="btn-outline" onclick="doLogout()" style="margin-top: 20px; margin-left: 10px;">Logout</button>
+    </div>
+</div>
+
+<script>
+    // YOUR ORIGINAL PRODUCT IMAGES FROM POSTIMAGE
+    const productImages = {
+        cassava: 'https://i.postimg.cc/Yq61xwKZ/v.jpg',
+        chicken: 'https://i.postimg.cc/5t0L1YYC/v2.jpg',
+        pigs: 'https://i.postimg.cc/zGDRSbkW/v3.jpg',
+        eggs: 'https://i.postimg.cc/yNkgtMty/v4.jpg',
+        palm: 'https://i.postimg.cc/v8W1JLq7/v5.jpg'
+    };
+
+    // Products Array with ORIGINAL IMAGES
+    const products = [
+        { id: 1, name: 'Cassava Farming (Nigeria)', category: 'Root Crop', desc: 'Premium cassava cultivation for industrial starch production.', minInvest: 20, roi: 16.86, duration: '30 days', image: productImages.cassava },
+        { id: 2, name: 'Free-Range Chicken (Ghana)', category: 'Poultry', desc: 'Organic free-range chicken farming with export certification.', minInvest: 20, roi: 16.86, duration: '30 days', image: productImages.chicken },
+        { id: 3, name: 'Pig Farming (Kenya)', category: 'Livestock', desc: 'Modern pig farming with biosecure facilities.', minInvest: 20, roi: 16.86, duration: '30 days', image: productImages.pigs },
+        { id: 4, name: 'Egg Production (South Africa)', category: 'Poultry', desc: 'Large-scale automated egg production facility. 50,000+ layers.', minInvest: 20, roi: 16.86, duration: '30 days', image: productImages.eggs },
+        { id: 5, name: 'Palm Oil Plantation (Nigeria)', category: 'Cash Crop', desc: 'Sustainable palm oil production with certified mills.', minInvest: 20, roi: 16.86, duration: '30 days', image: productImages.palm }
+    ];
+
+    // Render Products with ORIGINAL IMAGES
+    function renderProducts() {
+        const grid = document.getElementById('products-grid');
+        if (grid) {
+            grid.innerHTML = products.map(p => `
+                <div class="product-card">
+                    <img src="${p.image}" class="product-image" alt="${p.name}">
+                    <div class="product-content">
+                        <div class="product-category">${p.category}</div>
+                        <div class="product-title">${p.name}</div>
+                        <div class="product-desc">${p.desc}</div>
+                        <div class="product-meta">
+                            <div class="meta-item"><div class="meta-label">Min. Invest</div><div class="meta-val">$${p.minInvest}</div></div>
+                            <div class="meta-item"><div class="meta-label">ROI</div><div class="meta-val">${p.roi}%</div></div>
+                            <div class="meta-item"><div class="meta-label">Duration</div><div class="meta-val">${p.duration}</div></div>
+                        </div>
+                        <button class="invest-btn" onclick="showView('view-signup')">Invest from $20 →</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+    }
+
+    // Live Chart Data
+    function generatePriceData(days = 30) {
+        let prices = [];
+        let basePrice = 95;
+        for (let i = 0; i < days; i++) {
+            let change = (Math.random() - 0.5) * 4;
+            basePrice = Math.max(70, Math.min(120, basePrice + change));
+            prices.push(basePrice);
+        }
+        return prices;
+    }
+
+    const historicalPrices = generatePriceData(30);
+    const currentPriceValue = historicalPrices[historicalPrices.length - 1];
+    const startPrice = historicalPrices[0];
+    const priceChangePercent = ((currentPriceValue - startPrice) / startPrice * 100).toFixed(2);
+    const high24h = Math.max(...historicalPrices.slice(-7)).toFixed(2);
+    const low24h = Math.min(...historicalPrices.slice(-7)).toFixed(2);
+
+    if (document.getElementById('currentPrice')) {
+        document.getElementById('currentPrice').textContent = `$${currentPriceValue.toFixed(2)}`;
+        document.getElementById('priceChange').innerHTML = `${priceChangePercent >= 0 ? '▲' : '▼'} ${Math.abs(priceChangePercent)}%`;
+        document.getElementById('priceChange').style.color = priceChangePercent >= 0 ? '#6fcf97' : '#ff6b6b';
+        document.getElementById('high24h').textContent = `$${high24h}`;
+        document.getElementById('low24h').textContent = `$${low24h}`;
+    }
+
+    const ctx = document.getElementById('priceChart')?.getContext('2d');
+    if (ctx) {
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: Array.from({ length: 30 }, (_, i) => `Day ${i + 1}`),
+                datasets: [{
+                    label: 'Market Price ($)',
+                    data: historicalPrices,
+                    borderColor: '#6fcf97',
+                    backgroundColor: 'rgba(111, 207, 151, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 0,
+                    pointHoverRadius: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { labels: { color: '#e0e0e0' } },
+                    tooltip: { backgroundColor: '#1a3a2a', titleColor: '#6fcf97', bodyColor: '#e0e0e0' }
+                },
+                scales: {
+                    x: { grid: { color: 'rgba(111, 207, 151, 0.1)' }, ticks: { color: '#a0a0a0' } },
+                    y: { grid: { color: 'rgba(111, 207, 151, 0.1)' }, ticks: { color: '#a0a0a0' } }
+                }
+            }
+        });
+    }
+
+    let currentPrice = currentPriceValue;
+    let priceHistory = [...historicalPrices];
+    setInterval(() => {
+        let change = (Math.random() - 0.5) * 1.5;
+        currentPrice = Math.max(70, Math.min(120, currentPrice + change));
+        priceHistory.push(currentPrice);
+        if (priceHistory.length > 30) priceHistory.shift();
+        const newChangePercent = ((currentPrice - priceHistory[0]) / priceHistory[0] * 100).toFixed(2);
+        const newHigh = Math.max(...priceHistory.slice(-7)).toFixed(2);
+        const newLow = Math.min(...priceHistory.slice(-7)).toFixed(2);
+        if (document.getElementById('currentPrice')) {
+            document.getElementById('currentPrice').textContent = `$${currentPrice.toFixed(2)}`;
+            document.getElementById('priceChange').innerHTML = `${newChangePercent >= 0 ? '▲' : '▼'} ${Math.abs(newChangePercent)}%`;
+            document.getElementById('priceChange').style.color = newChangePercent >= 0 ? '#6fcf97' : '#ff6b6b';
+            document.getElementById('high24h').textContent = `$${newHigh}`;
+            document.getElementById('low24h').textContent = `$${newLow}`;
+        }
+    }, 10000);
+
+    // View Navigation
+    function showView(viewId) {
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        document.getElementById(viewId).classList.add('active');
+        if (viewId === 'view-home') renderProducts();
+    }
+
+    // User Storage
+    let users = JSON.parse(localStorage.getItem('agrovest_users') || '[]');
+    let currentUser = null;
+
+    function doSignup() {
+        const name = document.getElementById('su-name').value.trim();
+        const email = document.getElementById('su-email').value.trim();
+        const wallet = document.getElementById('su-wallet').value.trim();
+        const pass = document.getElementById('su-pass').value;
+        if (!name || !email || !wallet || !pass) return alert('Please fill all fields');
+        if (!wallet.startsWith('T')) return alert('Please enter a valid USDT TRC-20 wallet address (starts with T)');
+        if (users.find(u => u.email === email)) return alert('Email already registered');
+        const user = { id: Date.now(), name, email, wallet, password: pass };
+        users.push(user);
+        localStorage.setItem('agrovest_users', JSON.stringify(users));
+        currentUser = user;
+        document.getElementById('dash-name').textContent = name;
+        document.getElementById('dash-total').textContent = '$0';
+        document.getElementById('dash-roi').textContent = '$0';
+        showView('view-user-dash');
+        alert('Account created successfully!');
+    }
+
+    function doLogin() {
+        const email = document.getElementById('li-email').value.trim();
+        const pass = document.getElementById('li-pass').value;
+        const user = users.find(u => u.email === email && u.password === pass);
+        if (!user) return alert('Invalid email or password');
+        currentUser = user;
+        document.getElementById('dash-name').textContent = user.name;
+        document.getElementById('dash-total').textContent = '$0';
+        document.getElementById('dash-roi').textContent = '$0';
+        showView('view-user-dash');
+    }
+
+    function doLogout() {
+        currentUser = null;
+        showView('view-home');
+    }
+
+    // Chat Functions
+    function toggleChat() {
+        document.getElementById('chat-window').classList.toggle('open');
+    }
+
+    function sendMessage() {
+        const input = document.getElementById('chat-input');
+        const msg = input.value.trim();
+        if (!msg) return;
+        const messagesDiv = document.getElementById('chat-messages');
+        messagesDiv.innerHTML += `<div class="message user"><div class="bubble">${msg}</div></div>`;
+        input.value = '';
+        setTimeout(() => {
+            messagesDiv.innerHTML += `<div class="message bot"><div class="bubble">Thank you for reaching out! Our support team will respond shortly. For investment questions, please email support@agrovest.io</div></div>`;
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }, 500);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    window.showView = showView;
+    window.doSignup = doSignup;
+    window.doLogin = doLogin;
+    window.doLogout = doLogout;
+    window.toggleChat = toggleChat;
+    window.sendMessage = sendMessage;
+
+    // Initialize
+    renderProducts();
+</script>
+</body>
+</html>
